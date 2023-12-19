@@ -321,7 +321,8 @@ function App() {
       <Slate editor={editor}
         initialValue={initialValue}
         onSelectionChange={(selection: Selection) => {
-          console.log(selection, 'selection==selection')
+          editor.selection
+          console.log(selection, 'selection==selection',editor.selection)
           const { anchor, focus } = selection as BaseRange
           if (JSON.stringify(anchor) !== JSON.stringify(focus)) {
             const fragment = editor.getFragment()
