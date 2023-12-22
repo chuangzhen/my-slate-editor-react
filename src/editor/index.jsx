@@ -5,22 +5,17 @@ import { createEditor, Transforms, Text, Editor } from 'slate';
 import classnames from 'classnames';
 import Toolbar from '../components/toolbar/index.jsx';
 import pluginMap from '../components/plugins/index.js';
-import { blockWithEditor, extendWithEditor, merge } from './common.js';
+import { blockWithEditor, extendWithEditor } from './common.js';
 import '../css/slate-editor.less';
-import { withHtml } from '../utils'
+import { withHtml, getPlugins } from '../utils'
 
-const SlateEditor = ({ className: _className, value, onChange, plugins: _plugins }) => {
+
+
+const SlateEditor = ({ className: _className, initialValue, onChange, plugins: _plugins }) => {
     const plugins = useMemo(() => {
-        return _plugins.map((item) => {
-            if (typeof item === 'string') {
-                return pluginMap[item] || item;
-            } else if (pluginMap[item.key]) {
-                return merge(pluginMap[item.key], item);
-            } else {
-                return;
-            }
-        });
+        return getPlugins(_plugins, pluginMap)
     }, [_plugins]);
+
     const renderElement = useCallback((props) => <Element {...props} plugins={plugins} />, []);
     const renderLeaf = useCallback((props) => <Leaf {...props} plugins={plugins} />, []);
     const [className, setClassName] = useState('');
@@ -50,7 +45,7 @@ const SlateEditor = ({ className: _className, value, onChange, plugins: _plugins
         <div className={classnames('slate-container', _className, className)} ref={containerNode}>
             <Slate
                 editor={editor}
-                initialValue={value}
+                initialValue={initialValue}
                 onChange={onChange}
             >
                 <Toolbar getContainerNode={getContainerNode} plugins={plugins} />
@@ -62,6 +57,7 @@ const SlateEditor = ({ className: _className, value, onChange, plugins: _plugins
                     spellCheck={false}
                     autoFocus
                     onCompositionEnd={(e) => {
+                        console.log(1);
                         Transforms.setNodes(
                             editor,
                             {
@@ -76,6 +72,7 @@ const SlateEditor = ({ className: _className, value, onChange, plugins: _plugins
     );
 };
 
+
 const defaultPlugins = [
     'copyCutPaste',
     'history',
@@ -87,7 +84,7 @@ const defaultPlugins = [
     'textColor',
     'bold',
     'italic',
-    'underlined',
+    'underline',
     'strikethrough',
     'line',
     'superscript',
@@ -109,7 +106,7 @@ const defaultPlugins = [
     'line',
     'fullscreen'
 ];
-
+// SlateEditor.plugins  = defaultPlugins
 
 
 const Element = (props) => {
@@ -130,17 +127,22 @@ const Element = (props) => {
 };
 
 const Leaf = React.memo((props) => {
-    let { attributes, children, leaf, plugins } = props;
-    console.log(props,'==leaf==');
+    let { attributes: attr, children, leaf, plugins } = props;
+    console.log(props, '==leaf==');
     const style = {};
+    const attributes = { ...attr }
     plugins.forEach((item) => {
         if (item.processLeaf) {
-            item.processLeaf({ attributes, children, leaf, style });
+            let res = item.processLeaf({ attributes, children, leaf, style });
+            if (res) {
+                children = res
+            }
         }
     });
     if (leaf.key) {
         attributes.key = leaf.key;
     }
+    console.log(attributes, '==leaf==attributes')
     return (
         <span {...attributes} style={style}>
             {children}
@@ -149,4 +151,4 @@ const Leaf = React.memo((props) => {
 });
 
 export default SlateEditor;
-export { defaultPlugins };
+export { defaultPlugins, Element, Leaf };

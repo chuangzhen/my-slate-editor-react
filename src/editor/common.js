@@ -1,7 +1,8 @@
 import { Editor, Transforms, Range, Point } from 'slate';
 import React from 'react';
-import { deserialize } from '../utils'
+import { deserialize, handleSerialize } from '../utils'
 import ClipboardJS from 'clipboard';
+import ReactDOM from 'react-dom/client';
 const merge = require('deepmerge')
 const WRAP_TYPES = [
     {
@@ -50,7 +51,7 @@ const clearMark = (editor) => {
     Editor.clearMark(editor, [
         'bold',
         'italic',
-        'underlined',
+        'underline',
         'strikethrough',
         'superscript',
         'subscript',
@@ -121,10 +122,10 @@ const handlePaste = async (editor) => {
             }
             const blob = await clipboardItem.getType(type);
             const html = await blob.text()
-            // console.log(html, '==html==');
+            console.log(html, '==html==');
 
             const parsed = new DOMParser().parseFromString(html, 'text/html')
-            // console.log(parsed.body,'==html==222222');
+            console.log(parsed.body, '==html==222222');
             const fragment = deserialize(parsed.body)
             // console.log(fragment,'==html==fragment');
             Transforms.insertFragment(editor, fragment)
@@ -145,38 +146,40 @@ const handleCopyOrCut = (editor, type) => {
     let fragment = null
     if (!!anchor && JSON.stringify(anchor) !== JSON.stringify(focus)) {
         fragment = editor.getFragment()
-        // console.log(fragment, '==fragment==fragment')
+        console.log(fragment, '==fragment==fragment')
+
     }
     //  默认是点击复制按钮
     const btnId = type === 'cut' ? '#cut' : '#copy'
+    const selectElements = handleSerialize(fragment)
     // 序列化 为html
-    const p = document.createElement('p')
-    p.id = "pp"
-    p.style = "color:red;font-size:20px;"
-    p.innerHTML = '<ol data-slate-node="element"><li data-slate-node="element"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">11</span></span></span><span data-slate-node="text"><span data-slate-leaf="true" class="slate-sup slate-sup"><span data-slate-string="true">11</span></span></span><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">1</span></span></span><span data-slate-node="text"><span data-slate-leaf="true" style="text-decoration: line-through;"><span data-slate-string="true">1</span></span></span><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">11</span></span></span><span data-slate-node="text"><span data-slate-leaf="true" class="slate-sub slate-sub"><span data-slate-string="true">111</span></span></span><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">1</span></span></span></li><li data-slate-node="element"><span data-slate-node="text"><span data-slate-leaf="true" style="color: rgb(192, 57, 43); font-weight: bold;"><span data-slate-string="true">22</span></span></span><span data-slate-node="text"><span data-slate-leaf="true" style="color: rgb(192, 57, 43); font-weight: bold; font-style: italic;"><span data-slate-string="true">22</span></span></span><span data-slate-node="text"><span data-slate-leaf="true" style="font-style: italic;"><span data-slate-string="true">222</span></span></span><span data-slate-node="text"><span data-slate-leaf="true" style="font-style: italic; text-decoration: underline;"><span data-slate-string="true">22</span></span></span><span data-slate-node="text"><span data-slate-leaf="true" style="text-decoration: underline;"><span data-slate-string="true">22</span></span></span></li></ol>'
-    // console.log(1);
-    // const copyArea = <div>{React.createElement('p', {}, 'heml children')}</div>
-    document.body.appendChild(p)
+    const div = document.createElement('div')
+    div.id = "select"
+    document.body.appendChild(div)
+    const root = ReactDOM.createRoot(document.querySelector('#select'))
+    root.render(<>{selectElements}</>)
+
     const clipboard = new ClipboardJS(`${btnId}`, {
         target: function (trigger) {
             console.log(3);
-            const dom = document.querySelector('#pp')
+            const dom = document.querySelector('#select')
             console.log(dom, '====??===');
             return dom
         }
     });
     // console.log(2);
     clipboard.on('success', function (e) {
-        // console.log(e, '===5', p);
         // cut 
-        // Editor.deleteFragment(editor)
-        // setFragment(null)
-        document.body.removeChild(p)
+        type === 'cut' && Editor.deleteFragment(editor)
+
+
+        document.body.removeChild(div)
         // 解决二次点击复制时执行2次错误问题
         clipboard.destroy()
     });
 
     clipboard.on('error', function (e) {
+        console.log(222);
         // console.log(e, 4);
         // document.body.removeChild(p)
         clipboard.destroy()
@@ -184,6 +187,7 @@ const handleCopyOrCut = (editor, type) => {
 
 
 }
+// 粘贴后，光标的位置不正确
 const copyPaste = (editor, type) => {
     Editor.copyPaste(editor, type)
 }

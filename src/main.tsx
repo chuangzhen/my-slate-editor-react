@@ -3,7 +3,7 @@ import Editor, { defaultPlugins } from './editor/index.jsx';
 import './main.less';
 
 const Main = () => {
-    const [value, setValue] = useState([
+    const [initialValue, setValue] = useState([
         {
             type: 'paragraph',
             children: [{ text: 'abc' }]
@@ -13,7 +13,7 @@ const Main = () => {
         console.log('onChange', val);
         setValue(val);
     }, []);
-    return <Editor value={value} onChange={onChange} className="" plugins={defaultPlugins} />;
+    return <Editor initialValue={initialValue} onChange={onChange} className="" plugins={defaultPlugins} />;
 };
 
 export default Main

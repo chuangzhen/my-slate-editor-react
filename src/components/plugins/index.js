@@ -188,38 +188,42 @@ const pluginMap = {
     bold: createMarkPlugin({
         format: 'bold',
         title: '加粗',
-        processLeaf: ({ leaf, style }) => {
+        processLeaf: ({ leaf, style, children }) => {
             if (leaf.bold) {
                 style.fontWeight = 'bold';
+                return <b>{children}</b>
             }
         }
     }),
     italic: createMarkPlugin({
         format: 'italic',
         title: '斜体',
-        processLeaf: ({ leaf, style }) => {
+        processLeaf: ({ leaf, style, children }) => {
             if (leaf.italic) {
-                style.fontStyle = 'italic';
+                // style.fontStyle = 'italic';
+                return <i>{children}</i>
             }
         }
     }),
-    underlined: createMarkPlugin({
-        format: 'underlined',
+    underline: createMarkPlugin({
+        format: 'underline',
         title: '下划线',
-        processLeaf: ({ leaf, style }) => {
-            style.textDecoration = style.textDecoration || '';
-            if (leaf.underlined) {
-                style.textDecoration += ' underline';
+        processLeaf: ({ leaf, style, children }) => {
+            // style.textDecoration = style.textDecoration || '';
+            if (leaf.underline) {
+                // style.textDecoration += ' underline';
+                return <u>{children}</u>
             }
         }
     }),
     strikethrough: createMarkPlugin({
         format: 'strikethrough',
         title: '删除线',
-        processLeaf: ({ leaf, style }) => {
-            style.textDecoration = style.textDecoration || '';
+        processLeaf: ({ leaf, style, children }) => {
+            // style.textDecoration = style.textDecoration || '';
             if (leaf.strikethrough) {
-                style.textDecoration += ' line-through';
+                // style.textDecoration += ' line-through';
+                return <s>{children}</s>
             }
         }
     }),
@@ -227,9 +231,10 @@ const pluginMap = {
         format: 'superscript',
         title: '上标',
         otherFormat: 'subscript',
-        processLeaf: ({ leaf, attributes }) => {
+        processLeaf: ({ leaf, attributes, children }) => {
             if (leaf.superscript) {
-                attributes.className = classnames(attributes.className, 'slate-sup');
+                // attributes.className = classnames(attributes.className, 'slate-sup');
+                return <sup>{children}</sup>
             }
         }
     }),
@@ -237,9 +242,10 @@ const pluginMap = {
         format: 'subscript',
         title: '下标',
         otherFormat: 'superscript',
-        processLeaf: ({ leaf, attributes }) => {
+        processLeaf: ({ leaf, attributes, children }) => {
             if (leaf.subscript) {
-                attributes.className = classnames(attributes.className, 'slate-sub');
+                // attributes.className = classnames(attributes.className, 'slate-sub');
+                return <sub>{children}</sub>
             }
         }
     }),
