@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import DropDown from '../../common/dropDown';
 import ColorPicker from '../../common/colorPicker';
 import { Editor } from 'slate';

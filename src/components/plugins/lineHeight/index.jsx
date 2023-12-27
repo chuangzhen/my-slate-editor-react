@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {  useState } from 'react';
 import DropDown from '../../common/dropDown';
 import { Editor } from 'slate';
 import { useSlate } from 'slate-react';

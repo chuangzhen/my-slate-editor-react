@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState, useRef } from 'react';
-import { Editable, withReact, useSlate, Slate, useSelected, useFocused } from 'slate-react';
-import { createEditor, Transforms, Text, Editor } from 'slate';
+import { Editable, withReact, Slate } from 'slate-react';
+import { createEditor, Transforms, Text } from 'slate';
 // import merge from 'merge-deep';
 import classnames from 'classnames';
 import Toolbar from '../components/toolbar/index.jsx';
@@ -39,8 +39,8 @@ const SlateEditor = ({ className: _className, initialValue, onChange, plugins: _
         return editor;
     }, []);
     const containerNode = useRef(null);
-    const getContainerNode = useCallback(() => containerNode.current);
-
+    const getContainerNode = useCallback(() => containerNode.current, []);
+    console.log(editor);
     return (
         <div className={classnames('slate-container', _className, className)} ref={containerNode}>
             <Slate
@@ -66,6 +66,16 @@ const SlateEditor = ({ className: _className, initialValue, onChange, plugins: _
                             { match: Text.isText }
                         );
                     }}
+
+                    onKeyDown={(e) => {
+                        editor.emit("keydown", e);
+                    }}
+                    onMouseDown={(e) => {
+                        editor.emit("mousedown", e);
+                    }}
+                    onBlur={() => {
+                        editor.emit("blur");
+                    }}
                 />
             </Slate>
         </div>
@@ -74,6 +84,7 @@ const SlateEditor = ({ className: _className, initialValue, onChange, plugins: _
 
 
 const defaultPlugins = [
+    'table',
     'copyCutPaste',
     'history',
     'line',
@@ -128,7 +139,7 @@ const Element = (props) => {
 
 const Leaf = React.memo((props) => {
     let { attributes: attr, children, leaf, plugins } = props;
-    console.log(props, '==leaf==');
+    // console.log(props, '==leaf==');
     const style = {};
     const attributes = { ...attr }
     plugins.forEach((item) => {
@@ -142,7 +153,7 @@ const Leaf = React.memo((props) => {
     if (leaf.key) {
         attributes.key = leaf.key;
     }
-    console.log(attributes, '==leaf==attributes')
+    // console.log(attributes, '==leaf==attributes')
     return (
         <span {...attributes} style={style}>
             {children}

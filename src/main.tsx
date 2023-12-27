@@ -10,7 +10,7 @@ const Main = () => {
         }
     ]);
     const onChange = useCallback(function (val) {
-        console.log('onChange', val);
+        // console.log('onChange', val);
         setValue(val);
     }, []);
     return <Editor initialValue={initialValue} onChange={onChange} className="" plugins={defaultPlugins} />;

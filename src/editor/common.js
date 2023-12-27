@@ -1,4 +1,4 @@
-import { Editor, Transforms, Range, Point } from 'slate';
+import { Editor, Transforms, Range, Point, Path } from 'slate';
 import React from 'react';
 import { deserialize, handleSerialize } from '../utils'
 import ClipboardJS from 'clipboard';
@@ -144,6 +144,7 @@ const handleCopyOrCut = (editor, type) => {
     }
     const { anchor, focus } = selection
     let fragment = null
+    // if(Path.equals(anchor,focus)){
     if (!!anchor && JSON.stringify(anchor) !== JSON.stringify(focus)) {
         fragment = editor.getFragment()
         console.log(fragment, '==fragment==fragment')

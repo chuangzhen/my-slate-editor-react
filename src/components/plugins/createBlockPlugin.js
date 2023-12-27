@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { isBlockActive, toggleBlock } from '../../editor/common.js';
 import classnames from 'classnames';
 import { useSlate } from 'slate-react';

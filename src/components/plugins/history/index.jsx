@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState, useRef } from 'react';
-import { Editable, withReact, useSlate, Slate } from 'slate-react';
+import React from 'react';
+import {  useSlate } from 'slate-react';
 import { withHistory } from 'slate-history';
 
 export default {

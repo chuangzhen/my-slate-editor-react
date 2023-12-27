@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, {  useState } from 'react';
 import DropDown from '../../common/dropDown';
 import { useSlate } from 'slate-react';
-import { Editor, Transforms, createEditor, Range } from 'slate';
-import { preventDefault, toggleBlock } from '../../../editor/common.js';
+import { Editor } from 'slate';
+import {  toggleBlock } from '../../../editor/common.js';
 import './style.less';
 
 const Headings = React.memo(({ config }) => {

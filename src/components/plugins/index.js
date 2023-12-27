@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
-import { isBlockActive, toggleBlock, clearMark } from '../../editor/common.js';
-import { Editable, withReact, useSlate, Slate, useSelected, useFocused } from 'slate-react';
-import { Editor, Transforms, createEditor, Range, Point, Node } from 'slate';
+import React from 'react';
+import { clearMark } from '../../editor/common.js';
+import { useSlate, useSelected, } from 'slate-react';
+import { Editor, Transforms, Range, Point } from 'slate';
 import classnames from 'classnames';
 import createMarkPlugin from './createMarkPlugin.js';
 import createBlockPlugin from './createBlockPlugin.js';
@@ -179,6 +179,7 @@ const HR = React.memo(({ attributes, children, element }) => {
 });
 
 const pluginMap = {
+    table: require('./table/index.tsx').default,
     copyCutPaste: require('./copyCutPaste/index.jsx').default,
     history: require('./history/index.jsx').default,
     fontSize: require('./fontSize/index.jsx').default,

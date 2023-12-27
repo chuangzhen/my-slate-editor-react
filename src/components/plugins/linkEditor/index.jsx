@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState, useRef } from 'react';
-import { Transforms, Editor, Range, createEditor, Text, Point } from 'slate';
-import { Editable, withReact, useSlate, Slate } from 'slate-react';
+import React, { useState, useRef } from 'react';
+import { Transforms, Editor, Range, Point } from 'slate';
+import { useSlate } from 'slate-react';
 import Switch from '../../common/switch';
 import DropDown from '../../common/dropDown';
 import './style.less';
@@ -99,7 +99,7 @@ const LinkEditor = function LinkEditor({ getContainerNode, config }) {
     const onDropDownShow = () => {
         let editorEnd = Editor.end(editor, []);
         if (!editor.selection) {
-            Transforms.select(editor, {anchor: editorEnd, focus: editorEnd});
+            Transforms.select(editor, { anchor: editorEnd, focus: editorEnd });
         }
         let selection = (tmpSelection.current = editor.selection);
         isNewLink.current = false;
@@ -194,10 +194,10 @@ const LinkEditor = function LinkEditor({ getContainerNode, config }) {
                     </div>
                     <div className="toolbar-link-buttons">
                         <button type="button" onMouseDown={onConfirm} className="slate-button primary fr">
-                        {config.title.confirm}
+                            {config.title.confirm}
                         </button>
                         <button type="button" onMouseDown={onCancel} className="slate-button fr">
-                        {config.title.cancel}
+                            {config.title.cancel}
                         </button>
                     </div>
                 </>
